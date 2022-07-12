@@ -1,6 +1,6 @@
 # README
 
-PDOK Docker image for OGC API - Features Compliance Test Suite for command-line use, with additional features:
+PDOK Docker image for [OGC API - Features Compliance Test Suite](https://github.com/opengeospatial/ets-ogcapi-features10) for command-line use, with additional features:
 
 - pass service url as command-line argument
 - when passing `-exitOnFail` flag, return code `0` if test suite passes all tests, otherwise `1` (instead of always returning `0`)
