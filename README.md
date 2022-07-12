@@ -8,7 +8,6 @@ PDOK Docker image for [OGC API - Features Compliance Test Suite](https://github.
 ## Usage examples
 
 ```bash
-mkdir -p output
 docker run -v "$(pwd):/mnt" pdok/ets-ogcapi-features10-docker https://api.pdok.nl/geonovum/oaf/v1_0/ --generateHtmlReport true --outputDir /mnt/output --exitOnFail
 ```
 
@@ -22,6 +21,5 @@ cat > ./test-run-props.xml <<EOF
   <entry key="iut">${URL}</entry>
 </properties>
 EOF
-mkdir -p output
 docker run -v "$(pwd):/mnt" pdok/ets-ogcapi-features10-docker /mnt/test-run-props.xml --generateHtmlReport true --outputDir /mnt/output
 ```
