@@ -12,7 +12,7 @@ sleep 5
 #docker wait $(docker-compose -f $SCRIPT_DIR/docker-compose.yaml ps | grep kubernetes-agent_ | cut -d " " -f1)
 kustomize build $SCRIPT_DIR/goaf | kubectl apply -f -
 
-docker build . -t pdok/ets-ogcapi-features10-docker:test
+docker build $SCRIPT_DIR/. -t pdok/ets-ogcapi-features10-docker:test
 
 kubectl wait pods -l app=ogcapi-features --for=condition=Ready --timeout=180s
 
