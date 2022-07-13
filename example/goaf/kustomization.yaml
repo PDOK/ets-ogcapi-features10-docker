@@ -24,7 +24,6 @@ commonLabels:
 
 configMapGenerator:
   - name: ogcapi-features-config
-    behavior: merge
     files:
       - config/config.yaml
 
