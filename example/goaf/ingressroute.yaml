@@ -1,0 +1,35 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ogcapi-features
+spec:
+  routes:
+    - kind: Rule
+      match: Host(`localhost`) && PathPrefix(`/geonovum/oaf/v1_0`)
+      middlewares:
+        - name: ogcapi-features-headers
+        - name: ogcapi-features
+      services:
+        - kind: Service
+          name: ogcapi-features
+          port: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: ogcapi-features-headers
+spec:
+  headers:
+    customResponseHeaders:
+      Access-Control-Allow-Headers: Content-Encoding, Content-Length
+      Access-Control-Allow-Methods: GET, HEAD, OPTIONS
+      Access-Control-Allow-Origin: "*"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: ogcapi-features
+spec:
+  stripPrefix:
+    prefixes:
+      - /geonovum/oaf/v1_0
