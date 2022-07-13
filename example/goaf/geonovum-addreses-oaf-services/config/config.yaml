@@ -1,0 +1,54 @@
+service:
+  name: goaf Demo instance - running latest GitHub version
+  description: goaf provides an API to geospatial data
+  url: http://localhost:8080/geonovum/oaf/v1_0
+  keywords:
+    - geospatial
+    - data
+    - api
+    - oaf
+  license: https://creativecommons.org/licenses/by/4.0/
+  licenseName: CC-BY 4.0 license
+  provider:
+    name: PDOK
+    url: https://www.pdok.nl
+    contactPoint:
+      email: beheerPDOK@kadaster.nl
+      telephone: +3188-1834500
+      url: https://www.pdok.nl/contact
+      contactType: pointOfContact
+      description: PDOK Helpdesk
+    address:
+      streetAddress: Laan van Westenenk 701
+      postalCode: 7334 DP
+      addressLocality: Apeldoorn
+      addressCountry: Nederland
+openapi: spec/oaf.json
+defaultfeaturelimit: 100
+maxfeaturelimit: 500
+datasource:
+  gpkg:
+    file: data/addresses.gpkg
+    fid: fid
+  collections:
+    - identifier: addresses
+      description: INSPIRE Alternative Encoding Addresses
+      links:
+        - href: https://geodata.nationaalgeoregister.nl/inspireadressen/extract/inspireadressen.zip
+          hreflang: nl
+          length: 1911454553
+          rel: enclosure
+          type: application/x-compressed
+          title: INSPIRE harmonized Addresses
+        - href: https://s3.delivery.pdok.nl/public/geonovum/addresses.gpkg
+          rel: enclosure
+          type: application/geopackage+sqlite3
+          title: Addresses Geopackage
+        - href: https://www.nationaalgeoregister.nl/geonetwork/srv/dut/xml.metadata.get?uuid=a5f961e9-ebdd-41e2-b8e8-ab33ed340a83
+          rel: describedBy
+          type: application/xml
+          title: Dataset metadata record
+        - href: https://github.com/INSPIRE-MIF/2017.2/blob/master/GeoJSON/ads/simple-addresses.md#model-mapping
+          rel: describedBy
+          type: text/html; charset=utf-8
+          title: Model Mapping

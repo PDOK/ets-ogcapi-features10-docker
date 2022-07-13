@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ogcapi-features
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ogcapi-features
+  template:
+    metadata:
+      labels:
+        app: ogcapi-features
+    spec:
+      containers:
+        - name: ogcapi-features
+          image: goaf
+          command: ["oaf-server"]
+          args: ["-c", "/config/config.yaml"]
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: "0.2"
+              memory: 150M
+              ephemeral-storage: "50M"
+            requests:
+              cpu: "0.2"
+              memory: 150M
+              ephemeral-storage: "50M"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: ogcapi-features-config
+              mountPath: /config
+            - name: base
+              mountPath: /data
+              readOnly: false
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+      initContainers:
+        - name: init-geopackages
+          image: busybox
+          command: ["sh", "-c"]
+          args:
+            [
+              "if [ -z https://s3.delivery.pdok.nl/public/geonovum/addresses.gpkg ]; then echo 'environment variable REMOTE_GEOPACKAGE is not set; ignore pulling geopackage'; else mkdir -p /data && wget -O /data/addresses.gpkg https://s3.delivery.pdok.nl/public/geonovum/addresses.gpkg ; fi",
+            ]
+          volumeMounts:
+            - name: base
+              mountPath: /data
+              readOnly: false
+      volumes:
+        - name: ogcapi-features-config
+          configMap:
+            name: ogcapi-features-config
+        - name: base
+          emptyDir: {}

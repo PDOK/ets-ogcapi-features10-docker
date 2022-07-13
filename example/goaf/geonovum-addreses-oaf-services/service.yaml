@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ogcapi-features
+spec:
+  ports:
+    - protocol: TCP
+      name: ogcapi-features
+      port: 80
+      targetPort: 8080

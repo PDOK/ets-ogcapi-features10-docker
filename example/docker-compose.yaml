@@ -1,0 +1,65 @@
+---
+# To clean up run 'docker-compose rm -f -v'
+version: "2.4"
+
+networks:
+  ogcapi:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 173.20.20.0/24
+          gateway: 173.20.20.1
+
+services:
+  kubernetes-server:
+    image: rancher/k3s:v1.22.6-k3s1
+    command: "server"
+    ports:
+      - "6443:6443"
+      - "32788:80" # Forward the traefik-ingress nodeport
+    privileged: true
+    environment:
+      - K3S_TOKEN=ogcapi
+      - K3S_KUBECONFIG_OUTPUT=/output/kubeconfig.yaml
+      - K3S_KUBECONFIG_MODE=666
+    volumes:
+      - .:/output
+      - ./registries.yaml:/etc/rancher/k3s/registries.yaml
+    networks:
+      ogcapi:
+        ipv4_address: 173.20.20.10
+    healthcheck:
+      test: ["CMD-SHELL", "kubectl get pods"]
+      interval: 1s
+      timeout: 1s
+      retries: 1000
+    extra_hosts:
+      - "local-registry:173.20.20.12"
+
+  kubernetes-agent:
+    image: rancher/k3s:v1.22.6-k3s1
+    command: "agent"
+    privileged: true
+    environment:
+      - K3S_URL=https://173.20.20.10:6443
+      - K3S_TOKEN=ogcapi
+    depends_on:
+      kubernetes-server:
+        condition: service_healthy
+    volumes:
+      - ./registries.yaml:/etc/rancher/k3s/registries.yaml
+    networks:
+      ogcapi:
+        ipv4_address: 173.20.20.11
+    extra_hosts:
+      - "local-registry:173.20.20.12"
+
+  local-registry:
+    image: registry:2.7.1
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./local-registry:/var/lib/registry
+    networks:
+      ogcapi:
+        ipv4_address: 173.20.20.12

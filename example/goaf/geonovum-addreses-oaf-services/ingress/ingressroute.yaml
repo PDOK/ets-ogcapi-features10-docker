@@ -1,0 +1,13 @@
+nameReference:
+  - kind: Middleware
+    fieldSpecs:
+      - path: spec/routes/middlewares/name
+        kind: IngressRoute
+  - kind: Service
+    fieldSpecs:
+      - path: spec/routes/services/name
+        kind: IngressRoute
+  - kind: Secret
+    fieldSpecs:
+      - path: spec/basicAuth/secret
+        kind: Middleware
