@@ -19,9 +19,15 @@ if [[ $* == *--exitOnFail* ]];then
   EXIT_ON_FAIL="--exit-on-fail"
 fi
 
+PRETTY_PRINT=""
+if [[ $* == *--prettyPrint* ]];then
+  PRETTY_PRINT="--pretty-print"
+fi
+
 exec 5>&1 # capture output command and write to stdout see https://stackoverflow.com/a/16292136
 output=$(java -jar /opt/ets-ogcapi-features10-aio.jar "$@"|tee /dev/fd/5)
 output_dir=$(grep "Test results" <<< "$output" | cut -d: -f3 | xargs dirname)
 echo "output saved in ${output_dir}"
 echo "$EXIT_ON_FAIL"
-python3 /src/parse-results.py "${output_dir}" ${EXIT_ON_FAIL}
+echo "$PRETTY_PRINT"
+python3 /src/parse-results.py "${output_dir}" ${EXIT_ON_FAIL} ${PRETTY_PRINT}
