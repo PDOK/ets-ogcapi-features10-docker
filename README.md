@@ -8,7 +8,7 @@ PDOK Docker image for [OGC API - Features Compliance Test Suite](https://github.
 ## Usage examples
 
 ```bash
-docker run -v "$(pwd):/mnt" pdok/ets-ogcapi-features10-docker https://api.pdok.nl/geonovum/oaf/v1_0/ --generateHtmlReport true --outputDir /mnt/output --exitOnFail
+docker run -t -v "$(pwd):/mnt" pdok/ets-ogcapi-features10-docker https://api.pdok.nl/geonovum/oaf/v1_0/ --generateHtmlReport true --outputDir /mnt/output --exitOnFail --prettyPrint
 ```
 
 ```bash

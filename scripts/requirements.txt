@@ -1,3 +1,2 @@
 junitparser==2.7.0
-typer[all]
-typer-cli
+rich==12
