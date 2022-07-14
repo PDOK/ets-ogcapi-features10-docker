@@ -1,3 +1,5 @@
+[![Docker Pulls](https://badgen.net/docker/pulls/pdok/ets-ogcapi-features10-docker?icon=docker&label=pulls)](https://hub.docker.com/r/pdok/ets-ogcapi-features10-docker/)
+
 # README
 
 PDOK Docker image for [OGC API - Features Compliance Test Suite](https://github.com/opengeospatial/ets-ogcapi-features10) for command-line use, with additional features:
