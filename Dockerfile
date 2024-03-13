@@ -1,8 +1,7 @@
-ARG REGISTRY="docker.io"
-FROM ${REGISTRY}/maven:3.6.3-openjdk-8
+FROM docker.io/maven:3-eclipse-temurin-8
 
 ARG REPO=https://github.com/opengeospatial/ets-ogcapi-features10.git
-ARG REPO_REF="tags/1.4"
+ARG REPO_REF="tags/1.7"
 
 WORKDIR /src
 RUN git clone ${REPO} . && git checkout ${REPO_REF}
@@ -10,7 +9,7 @@ RUN git clone ${REPO} . && git checkout ${REPO_REF}
 RUN mvn clean install
 RUN mv /src/target/ets-ogcapi-features10-*-aio.jar /src/target/ets-ogcapi-features10-aio.jar
 
-FROM ${REGISTRY}/azul/zulu-openjdk:8u265-8.48.0.53
+FROM docker.io/eclipse-temurin:21-jre
 RUN apt update && apt install -y python3 \
     python3-pip
 
