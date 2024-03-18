@@ -87,6 +87,44 @@ def main(result_dir, service_url, pretty_print, exit_on_fail):
             for case in test_xml
             if any(isinstance(item, Skipped) for item in case.result)
         ]
+        errored_or_skipped = [
+            case
+            for case in test_xml
+            if any(isinstance(item, Error) for item in case.result)
+        ]
+        if errored_or_skipped:
+            for case in errored_or_skipped:
+                # TestNG SkipExceptions are wrongfully marked as errored when using the JUnit reporter.
+                # Turn these errored tests into skipped tests.
+                if case.result[0].type == 'org.testng.SkipException':
+                    skipped += [case]
+                else:
+                    # Not a SkipException so treat as errored
+                    errored = [case]
+                    errored_message = [
+                        result.message for error in errored for result in error.result
+                    ]
+                    errored_tuples += [
+                        (
+                            junit_test.name,
+                            test_xml.name,
+                            result.message,
+                            get_api_docs_url(test_xml.name, error.name),
+                        )
+                        for error in errored
+                        for result in error.result
+                    ]
+                    if errored:
+                        error_name = next(iter([error.name for error in errored]), "")
+                        errored_cases += (
+                            [f"## {test_xml.name}"]
+                            + errored_message
+                            + [""]
+                            + [get_api_docs_url(test_xml.name, error_name)]
+                            + [""]
+                        )
+
+        # Handle skipped
         skipped_message = [result.message for skip in skipped for result in skip.result]
         skipped_tuples += [
             (
@@ -101,39 +139,11 @@ def main(result_dir, service_url, pretty_print, exit_on_fail):
         if skipped:
             skip_name = next(iter([skip.name for skip in skipped]), "")
             skipped_cases += (
-                [f"## {test_xml.name}"]
-                + skipped_message
-                + [""]
-                + [get_api_docs_url(test_xml.name, skip_name)]
-                + [""]
-            )
-
-        errored = [
-            case
-            for case in test_xml
-            if any(isinstance(item, Error) for item in case.result)
-        ]
-        errored_message = [
-            result.message for error in errored for result in error.result
-        ]
-        errored_tuples += [
-            (
-                junit_test.name,
-                test_xml.name,
-                result.message,
-                get_api_docs_url(test_xml.name, error.name),
-            )
-            for error in errored
-            for result in error.result
-        ]
-        if errored:
-            error_name = next(iter([error.name for error in errored]), "")
-            errored_cases += (
-                [f"## {test_xml.name}"]
-                + errored_message
-                + [""]
-                + [get_api_docs_url(test_xml.name, error_name)]
-                + [""]
+                    [f"## {test_xml.name}"]
+                    + skipped_message
+                    + [""]
+                    + [get_api_docs_url(test_xml.name, skip_name)]
+                    + [""]
             )
 
     if pretty_print:
