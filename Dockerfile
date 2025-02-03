@@ -1,7 +1,7 @@
-FROM docker.io/maven:3-eclipse-temurin-8
+FROM docker.io/maven:3-eclipse-temurin-21
 
 ARG REPO=https://github.com/opengeospatial/ets-ogcapi-features10.git
-ARG REPO_REF="tags/1.7"
+ARG REPO_REF="tags/1.9"
 
 WORKDIR /src
 RUN git clone ${REPO} . && git checkout ${REPO_REF}
@@ -16,10 +16,11 @@ RUN apt update && apt install -y python3 \
 WORKDIR /src
 COPY scripts /src
 
+RUN python3 -m pip config set global.break-system-packages true
 RUN python3 -m pip install -r requirements.txt
 LABEL AUTHOR="pdok@kadaster.nl"
 # set correct timezone
-ENV TZ Europe/Amsterdam
+ENV TZ=Europe/Amsterdam
 
 COPY --from=0 /src/target/ets-ogcapi-features10-aio.jar /opt/ets-ogcapi-features10-aio.jar
 ENTRYPOINT ["bash", "/src/startup.sh"]
