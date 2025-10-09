@@ -10,11 +10,11 @@ PDOK Docker image for [OGC API - Features Compliance Test Suite](https://github.
 ## Usage examples
 
 ```bash
-docker run -t -v "$(pwd):/mnt" pdok/ets-ogcapi-features10-docker:latest https://api.pdok.nl/geonovum/oaf/v1_0/ --generateHtmlReport true --outputDir /mnt/output --exitOnFail --prettyPrint
+docker run -t -v "$(pwd):/mnt" pdok/ets-ogcapi-features10-docker:latest https://example.com/ogc-api/v1/ --generateHtmlReport true --outputDir /mnt/output --exitOnFail --prettyPrint
 ```
 
 ```bash
-URL=https://api.pdok.nl/geonovum/oaf/v1_0/
+URL=https://example.com/ogc-api/v1/ 
 cat > ./test-run-props.xml <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
